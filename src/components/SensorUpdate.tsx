@@ -81,7 +81,7 @@ export default function SensorForm({
   }, [id]);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="extraform">
       {/* Name */}
       <div>
         <label>Name</label>
