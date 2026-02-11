@@ -1,20 +1,20 @@
 export type User = {
-  _id: string;
+  // _id: string;
   email: string;
   password: string;
 };
 
-export async function getUserByEmail(email: string): Promise<User | null> {
-  const res = await fetch(
-    `http://localhost:3000/users/by-email?email=${encodeURIComponent(email)}`,
-  );
+// export async function getUserByEmail(email: string): Promise<User | null> {
+//   const res = await fetch(
+//     `http://localhost:3000/users/by-email?email=${encodeURIComponent(email)}`,
+//   );
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch user");
-  }
+//   if (!res.ok) {
+//     throw new Error("Failed to fetch user");
+//   }
 
-  return res.json();
-}
+//   return res.json();
+// }
 
 export async function login(email: string, password: string) {
   const res = await fetch("http://localhost:3000/users/login", {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getUserByEmail, login, type User } from "../api/users";
+import { login, type User } from "../api/auth";
 import { useNavigate } from "react-router";
 
 export default function Login() {
