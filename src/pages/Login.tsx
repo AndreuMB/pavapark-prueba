@@ -23,8 +23,12 @@ export default function Login() {
       //   } else {
       //     setError("password wrong");
       //   }
-      const result = await auth.loginUser(email, password);
-      setUser(result);
+      await auth.loginUser(email, password);
+      // console.log({ result });
+
+      // const res = await fetch("/users/me", { credentials: "include" });
+      // setUser(await res.json());
+      // setUser(result);
       navigate("/sensors");
     } catch (err) {
       setError("User not found");
