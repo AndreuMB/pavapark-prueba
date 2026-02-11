@@ -1,39 +1,66 @@
-import { useState, type ChangeEvent, type SubmitEvent } from "react";
-import { createSensor, type Sensor } from "../api/sensors";
+import { useEffect, useState, type ChangeEvent, type SubmitEvent } from "react";
+import {
+  createSensor,
+  getSensor,
+  updateSensor,
+  type Sensor,
+} from "../api/sensors";
 
-export default function SensorForm() {
-  // const [form, setForm] = useState<Sensor>({
-  //   name: "",
-  //   sensorCode: 0,
-  //   // type: "MANUAL_UPLOAD",
-  //   status: true,
-  //   // url: "",
-  // });
+export default function SensorForm({
+  id,
+  onUpdated,
+}: {
+  id: string;
+  onUpdated: (sensor: Sensor) => void;
+}) {
+  //   const [form, setForm] = useState<Sensor>({
+  //     name: "",
+  //     sensorCode: 0,
+  //     // type: "MANUAL_UPLOAD",
+  //     status: true,
+  //     // url: "",
+  //   });
   const [name, setName] = useState<string>();
   const [sensorCode, setSensorCode] = useState<number>();
-  const [status, setStatus] = useState<boolean>(true);
+  const [status, setStatus] = useState<boolean>();
 
   const [error, setError] = useState<string>();
 
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
-
+    console.log("Form data:", name);
+    console.log("Form data:", sensorCode);
+    console.log("Form data:", status);
+    // console.log("Form data:", form);
     setError("");
 
     if (!name || !sensorCode || status === undefined) {
       setError("bad data");
       return;
     }
-    try {
-      const result = await createSensor(name, sensorCode, status);
-      console.log(result);
 
+    try {
+      const result = await updateSensor(id, name, sensorCode, status);
+      console.log(result);
+      if (result) onUpdated(result);
       // navigate("/sensors");
-      setError("Success");
     } catch (err) {
-      setError("sensor error");
+      setError("Sensor error updating");
     }
   };
+
+  const fetchSensor = async () => {
+    const sensor = await getSensor(id);
+    if (sensor) {
+      setName(sensor.name);
+      setSensorCode(sensor.sensorCode);
+      setStatus(sensor.status);
+    }
+  };
+
+  useEffect(() => {
+    fetchSensor();
+  }, []);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -55,17 +82,9 @@ export default function SensorForm() {
           name="sensorCode"
           value={sensorCode}
           onChange={(e) => setSensorCode(Number(e.target.value))}
+          required
         />
       </div>
-
-      {/* Type
-      <div>
-        <label>Type</label>
-        <select name="type" value={form.type} onChange={handleChange}>
-          <option value="MANUAL_UPLOAD">Manual Upload</option>
-          <option value="HTTP_POLL">HTTP Poll</option>
-        </select>
-      </div> */}
 
       {/* Status */}
       <div>
@@ -77,15 +96,6 @@ export default function SensorForm() {
           onChange={(e) => setStatus(e.target.checked)}
         ></input>
       </div>
-
-      {/* URL (solo HTTP_POLL)
-      {form.type === "HTTP_POLL" && (
-        <div>
-          <label>URL</label>
-          <input name="url" value={form.url} onChange={handleChange} />
-          {errors.url && <p>{errors.url}</p>}
-        </div>
-      )} */}
 
       <button type="submit">Save</button>
       {error}
