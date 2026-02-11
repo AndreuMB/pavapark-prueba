@@ -5,6 +5,7 @@ import {
   updateSensor,
   type Sensor,
 } from "../api/sensors";
+import { isValidUrl } from "../utils";
 
 export default function SensorForm({
   id,
@@ -20,27 +21,42 @@ export default function SensorForm({
   //     status: true,
   //     // url: "",
   //   });
-  const [name, setName] = useState<string>();
-  const [sensorCode, setSensorCode] = useState<number>();
-  const [status, setStatus] = useState<boolean>();
+  const [name, setName] = useState<string>("");
+  const [sensorCode, setSensorCode] = useState<string>("");
+  const [status, setStatus] = useState<boolean>(false);
+  const [type, setType] = useState<string>("MANUAL_UPLOAD");
+  const [url, setUrl] = useState<string>("");
 
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<string>("");
 
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     console.log("Form data:", name);
     console.log("Form data:", sensorCode);
     console.log("Form data:", status);
+
     // console.log("Form data:", form);
     setError("");
 
-    if (!name || !sensorCode || status === undefined) {
+    if (!name || !sensorCode || !type || !url || status === undefined) {
       setError("bad data");
       return;
     }
 
+    if (type === "HTTP_POLL" && !isValidUrl(url)) {
+      setError("Invalid URL format");
+      return;
+    }
+
     try {
-      const result = await updateSensor(id, name, sensorCode, status);
+      const result = await updateSensor(
+        id,
+        name,
+        sensorCode,
+        type,
+        url,
+        status,
+      );
       console.log(result);
       if (result) onUpdated(result);
       // navigate("/sensors");
@@ -54,13 +70,15 @@ export default function SensorForm({
     if (sensor) {
       setName(sensor.name);
       setSensorCode(sensor.sensorCode);
+      setType(sensor.type);
+      setUrl(sensor.url || "");
       setStatus(sensor.status);
     }
   };
 
   useEffect(() => {
     fetchSensor();
-  }, []);
+  }, [id]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -74,17 +92,40 @@ export default function SensorForm({
         />
       </div>
 
-      {/* Sensor Code */}
       <div>
         <label>Sensor Code</label>
         <input
-          type="number"
+          type="text"
           name="sensorCode"
           value={sensorCode}
-          onChange={(e) => setSensorCode(Number(e.target.value))}
+          onChange={(e) => setSensorCode(e.target.value)}
           required
         />
       </div>
+
+      <div>
+        <label>Type</label>
+        <select
+          name="type"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+        >
+          <option value="MANUAL_UPLOAD">Manual Upload</option>
+          <option value="HTTP_POLL">HTTP Poll</option>
+        </select>
+      </div>
+
+      {type == "HTTP_POLL" && (
+        <div>
+          <label>Url</label>
+          <input
+            name="url"
+            type="string"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </div>
+      )}
 
       {/* Status */}
       <div>

@@ -1,13 +1,17 @@
 export type Sensor = {
   _id: string;
   name: string;
-  sensorCode: number;
+  sensorCode: string;
+  type: string;
+  url?: string;
   status: boolean;
 };
 
 export async function createSensor(
   name: string,
-  sensorCode: number,
+  sensorCode: string,
+  type: string,
+  url: string,
   status: boolean,
 ) {
   const res = await fetch("http://localhost:3000/sensors/", {
@@ -15,7 +19,7 @@ export async function createSensor(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name, sensorCode, status }),
+    body: JSON.stringify({ name, sensorCode, type, url, status }),
   });
 
   if (!res.ok) {
@@ -48,7 +52,9 @@ export async function getSensor(id: string): Promise<Sensor | null> {
 export async function updateSensor(
   id: string,
   name: string,
-  sensorCode: number,
+  sensorCode: string,
+  type: string,
+  url: string,
   status: boolean,
 ): Promise<Sensor | null> {
   const res = await fetch(`http://localhost:3000/sensors/${id}`, {
@@ -56,7 +62,7 @@ export async function updateSensor(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name, sensorCode, status }),
+    body: JSON.stringify({ name, sensorCode, type, url, status }),
   });
 
   if (!res.ok) {

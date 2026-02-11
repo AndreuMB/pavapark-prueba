@@ -1,5 +1,7 @@
 import { useState, type ChangeEvent, type SubmitEvent } from "react";
 import { createSensor, type Sensor } from "../api/sensors";
+import { useNavigate } from "react-router";
+import { isValidUrl } from "../utils";
 
 export default function SensorForm() {
   // const [form, setForm] = useState<Sensor>({
@@ -10,9 +12,11 @@ export default function SensorForm() {
   //   // url: "",
   // });
   const [name, setName] = useState<string>();
-  const [sensorCode, setSensorCode] = useState<number>();
+  const [sensorCode, setSensorCode] = useState<string>();
   const [status, setStatus] = useState<boolean>(true);
-
+  const [type, setType] = useState<string>();
+  const [url, setUrl] = useState<string>();
+  const navigate = useNavigate();
   const [error, setError] = useState<string>();
 
   const handleSubmit = async (e: SubmitEvent) => {
@@ -20,12 +24,18 @@ export default function SensorForm() {
 
     setError("");
 
-    if (!name || !sensorCode || status === undefined) {
+    if (!name || !sensorCode || !type || !url || status === undefined) {
       setError("bad data");
       return;
     }
+
+    if (type === "HTTP_POLL" && !isValidUrl(url)) {
+      setError("Invalid URL format");
+      return;
+    }
+
     try {
-      const result = await createSensor(name, sensorCode, status);
+      const result = await createSensor(name, sensorCode, type, url, status);
       console.log(result);
 
       // navigate("/sensors");
@@ -51,21 +61,37 @@ export default function SensorForm() {
       <div>
         <label>Sensor Code</label>
         <input
-          type="number"
+          type="string"
           name="sensorCode"
           value={sensorCode}
-          onChange={(e) => setSensorCode(Number(e.target.value))}
+          onChange={(e) => setSensorCode(e.target.value)}
         />
       </div>
 
-      {/* Type
+      {/* Type */}
       <div>
         <label>Type</label>
-        <select name="type" value={form.type} onChange={handleChange}>
+        <select
+          name="type"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+        >
           <option value="MANUAL_UPLOAD">Manual Upload</option>
           <option value="HTTP_POLL">HTTP Poll</option>
         </select>
-      </div> */}
+      </div>
+
+      {type == "HTTP_POLL" && (
+        <div>
+          <label>Url</label>
+          <input
+            name="url"
+            type="string"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </div>
+      )}
 
       {/* Status */}
       <div>
@@ -78,16 +104,9 @@ export default function SensorForm() {
         ></input>
       </div>
 
-      {/* URL (solo HTTP_POLL)
-      {form.type === "HTTP_POLL" && (
-        <div>
-          <label>URL</label>
-          <input name="url" value={form.url} onChange={handleChange} />
-          {errors.url && <p>{errors.url}</p>}
-        </div>
-      )} */}
-
       <button type="submit">Save</button>
+      <button onClick={() => navigate("/sensors")}>Back</button>
+
       {error}
     </form>
   );
