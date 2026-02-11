@@ -13,6 +13,7 @@ import SensorForm from "./components/SensorForm.tsx";
 import Sensors from "./pages/Sensors.tsx";
 import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
 import { AuthProvider, useAuth } from "./components/AuthProvider.tsx";
+import Ingestions from "./pages/Ingestions.tsx";
 
 const router = createBrowserRouter([
   // {
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <SensorForm />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/sensors/:sensorId",
+    element: (
+      <ProtectedRoute>
+        <Ingestions />
       </ProtectedRoute>
     ),
   },
