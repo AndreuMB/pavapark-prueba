@@ -1,17 +1,28 @@
 import { useEffect, useState } from "react";
 import { deleteSensor, getSensors, type Sensor } from "../api/sensors";
 import SensorUpdate from "../components/SensorUpdate";
+import { useAuth } from "../components/AuthProvider";
+import type { User } from "../api/auth";
 
 export default function SensorsTable() {
   const [sensors, setSensors] = useState<Sensor[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [sensorId, setSensorId] = useState<string | null>(null);
+  const [useremail, setUserEmail] = useState<string>("");
+
+  const auth = useAuth();
+  const handleLogout = () => {
+    auth.logoutUser();
+  };
+
   const fetchSensors = async () => {
     const sensors = await getSensors();
     if (sensors) setSensors(sensors);
   };
+
   useEffect(() => {
     fetchSensors();
+    setUserEmail(auth.user!.email);
   }, []);
 
   const handleDeleteSensor = async (sensorId: string) => {
@@ -21,6 +32,8 @@ export default function SensorsTable() {
 
   return (
     <>
+      <button onClick={handleLogout}>LOGOUT</button>
+      <h1>{useremail}</h1>
       <table>
         <thead>
           <tr>

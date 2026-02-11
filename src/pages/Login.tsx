@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { login, type User } from "../api/auth";
 import { useNavigate } from "react-router";
+import { useAuth } from "../components/AuthProvider";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ export default function Login() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
@@ -16,13 +18,14 @@ export default function Login() {
     setError("");
 
     try {
-      const result = await login(email, password);
+      // const result = await login(email, password);
       //   if (result?.password == password) {
-      setUser(result);
       //   } else {
       //     setError("password wrong");
       //   }
-      navigate("/dashboard");
+      const result = await auth.loginUser(email, password);
+      setUser(result);
+      navigate("/sensors");
     } catch (err) {
       setError("User not found");
     }
