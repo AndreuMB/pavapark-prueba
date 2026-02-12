@@ -11,11 +11,11 @@ export default function SensorForm() {
   //   status: true,
   //   // url: "",
   // });
-  const [name, setName] = useState<string>();
-  const [sensorCode, setSensorCode] = useState<string>();
+  const [name, setName] = useState<string>("");
+  const [sensorCode, setSensorCode] = useState<string>("");
   const [status, setStatus] = useState<boolean>(true);
-  const [type, setType] = useState<string>();
-  const [url, setUrl] = useState<string>();
+  const [type, setType] = useState<string>("MANUAL_UPLOAD");
+  const [url, setUrl] = useState<string>("");
   const navigate = useNavigate();
   const [error, setError] = useState<string>();
 
@@ -24,7 +24,10 @@ export default function SensorForm() {
 
     setError("");
 
-    if (!name || !sensorCode || !type || !url || status === undefined) {
+    if (!name || !sensorCode || !type || status === undefined) {
+      console.log(type);
+      console.log(status);
+
       setError("bad data");
       return;
     }
