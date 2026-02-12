@@ -44,6 +44,9 @@ export default function Login() {
   return (
     <div>
       <form>
+        <label htmlFor="email">Email</label>
+        <br />
+
         <input
           type="email"
           placeholder="Email"
@@ -51,6 +54,9 @@ export default function Login() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+        <br />
+        <label htmlFor="password">Password</label>
+        <br />
 
         <input
           type="password"
