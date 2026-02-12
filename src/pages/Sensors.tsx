@@ -25,9 +25,15 @@ export default function SensorsTable() {
     setUserEmail(auth.user!.email);
   }, []);
 
-  const handleDeleteSensor = async (sensorId: string) => {
+  const handleDeleteSensor = async (e: React.MouseEvent, sensorId: string) => {
+    e.stopPropagation();
     await deleteSensor(sensorId);
     fetchSensors();
+  };
+
+  const handleSetSensorId = async (e: React.MouseEvent, sensorId: string) => {
+    e.stopPropagation();
+    setSensorId(sensorId);
   };
 
   return (
@@ -36,7 +42,7 @@ export default function SensorsTable() {
       <h1>{useremail}</h1>
       <button onClick={() => navigate("/createSensor")}>Add sensor</button>
 
-      <table>
+      <table className="sensorTable">
         <thead>
           <tr>
             <th>Name</th>
@@ -50,7 +56,10 @@ export default function SensorsTable() {
 
         <tbody>
           {sensors.map((sensor) => (
-            <tr key={sensor._id}>
+            <tr
+              onClick={() => navigate(`${sensor._id}/ingestions`)}
+              key={sensor._id}
+            >
               <td>{sensor.name}</td>
               <td>{sensor.sensorCode}</td>
               <td>{sensor.type}</td>
@@ -58,10 +67,12 @@ export default function SensorsTable() {
               {/* <td>{new Date(sensor.createdAt).toLocaleString()}</td>
             <td>{new Date(sensor.updatedAt).toLocaleString()}</td> */}
               <td>
-                <button onClick={() => setSensorId(sensor._id)}>Update</button>
+                <button onClick={(e) => handleSetSensorId(e, sensor._id)}>
+                  Update
+                </button>
               </td>
               <td>
-                <button onClick={() => handleDeleteSensor(sensor._id)}>
+                <button onClick={(e) => handleDeleteSensor(e, sensor._id)}>
                   Delete
                 </button>
               </td>

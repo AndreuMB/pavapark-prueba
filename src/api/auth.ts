@@ -31,3 +31,28 @@ export async function login(email: string, password: string) {
 
   return res.json();
 }
+
+export async function checkCookies() {
+  try {
+    const response = await fetch("http://localhost:3000/users/me", {
+      credentials: "include",
+    });
+    if (!response.ok) {
+      return null;
+    }
+    return response.json();
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function logout() {
+  try {
+    const response = await fetch("http://localhost:3000/users/logout", {
+      credentials: "include",
+    });
+    return response.json();
+  } catch (error) {
+    throw new Error("Logout failed");
+  }
+}

@@ -49,6 +49,14 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/sensors/:sensorId/ingestions",
+    element: (
+      <ProtectedRoute>
+        <Ingestions />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/",
     element: <Login />,
   },

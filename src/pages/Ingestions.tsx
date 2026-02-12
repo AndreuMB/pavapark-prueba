@@ -4,23 +4,26 @@ import { useAuth } from "../components/AuthProvider";
 import {
   addIngestion,
   getIngestionsBySensor,
-  type Ingestion,
+  type IngestionRecord,
 } from "../api/ingestions";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 export default function Ingestions() {
   const [error, setError] = useState<string | null>(null);
-  const [ingestions, setIngestions] = useState<Ingestion[]>([]);
+  const [ingestions, setIngestions] = useState<IngestionRecord[]>([]);
   const [useremail] = useState<string>("");
-  const { sensorId } = useParams(); // grabs :sensorId from URL
+  const { sensorId } = useParams(); // sensorid from URL
   const auth = useAuth();
-  const handleLogout = () => {
-    auth.logoutUser();
-  };
+  const navigation = useNavigate();
+
+  if (!sensorId) {
+    return "no sensor";
+  }
+
   const fetchIngestions = async () => {
     try {
-      const data = await getIngestionsBySensor(sensorId!);
-      console.log(data);
+      const data = await getIngestionsBySensor(sensorId);
+      console.log("ingestionsRecords = ", data);
 
       setIngestions(data);
     } catch (err) {
@@ -32,20 +35,25 @@ export default function Ingestions() {
   }, [sensorId]);
 
   const handleAddIngestion = async () => {
-    await addIngestion(sensorId!, 25.4);
+    await addIngestion(sensorId);
     fetchIngestions();
   };
 
   return (
     <>
-      <button onClick={handleLogout}>LOGOUT</button>
-      <h1>{useremail}</h1>
+      <button onClick={() => navigation("/sensors")}>BACK</button>
+      <p>
+        Sensor ID <span>{sensorId}</span>{" "}
+      </p>
       <button onClick={handleAddIngestion}>ADD INGESTION</button>
       <table>
         <thead>
           <tr>
-            <th>Sensor Code</th>
-            <th>Value C</th>
+            <th>Status</th>
+            <th>Error Message</th>
+            <th>Records</th>
+            <th>Started</th>
+            <th>Finished</th>
             {/* <th>Created</th> */}
             {/* <th>Updated</th> */}
           </tr>
@@ -53,10 +61,13 @@ export default function Ingestions() {
 
         <tbody>
           {ingestions.length > 0 &&
-            ingestions.map((ingest) => (
-              <tr key={ingest._id}>
-                <td>{ingest.sensorCode}</td>
-                <td>{ingest.valueC}</td>
+            ingestions.map((ingestion) => (
+              <tr key={ingestion._id}>
+                <td>{ingestion.status}</td>
+                <td>{ingestion.errorMessage}</td>
+                <td>{ingestion.recordsProcessed}</td>
+                <td>{ingestion.startedAt}</td>
+                <td>{ingestion.finishedAt}</td>
                 {/* <td>{ingesta.sensorCode}</td>
               <td>{ingesta.status ? "Active" : "Paused"}</td>
               <td>

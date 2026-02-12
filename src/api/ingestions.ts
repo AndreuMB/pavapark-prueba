@@ -1,3 +1,13 @@
+export type IngestionRecord = {
+  _id: string;
+  status: string;
+  errorMessage: string;
+  recordsProcessed: string;
+  startedAt: string;
+  finishedAt: string;
+  sensorId: string;
+};
+
 export type Ingestion = {
   _id: string;
   sensorCode: string;
@@ -5,14 +15,8 @@ export type Ingestion = {
   valueC: number;
 };
 
-export async function addIngestion(sensorCode: string, valueC: number) {
-  const res = await fetch("http://localhost:3000/ingestions/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ sensorCode, valueC }),
-  });
+export async function addIngestion(sensorId: string) {
+  const res = await fetch(`http://localhost:3000/sensors/${sensorId}/ingest/`);
 
   if (!res.ok) {
     throw new Error("Invalid ingestion");
@@ -21,14 +25,10 @@ export async function addIngestion(sensorCode: string, valueC: number) {
   return res.json();
 }
 
-export async function getIngestionsBySensor(sensorCode: string) {
-  const res = await fetch(`http://localhost:3000/ingestions/by-sensor`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ sensorCode }),
-  });
+export async function getIngestionsBySensor(sensorId: string) {
+  const res = await fetch(
+    `http://localhost:3000/sensors/${sensorId}/ingestions`,
+  );
 
   if (!res.ok) {
     throw new Error("Invalid ingestion");

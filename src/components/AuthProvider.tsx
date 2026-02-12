@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { User } from "../api/auth";
+import { checkCookies, logout, type User } from "../api/auth";
 
 type AuthContextType = {
   user: User | null;
@@ -44,23 +44,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     setLoading(true);
     const fetchMe = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/users/me", {
-          credentials: "include",
-        });
-        const data = await response.json();
-        console.log(data.user.email);
-
-        setUser(data.user.email);
-      } catch (error) {
-        setUser(null);
-      }
+      const user = await checkCookies();
+      setUser(user);
       setLoading(false);
     };
     fetchMe();
   }, []);
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
+    const response = await logout();
+    console.log(response);
+
     setUser(null);
   };
 
