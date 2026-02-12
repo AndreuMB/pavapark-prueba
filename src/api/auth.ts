@@ -27,6 +27,7 @@ export async function login(email: string, password: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),
+    credentials: "include",
   });
 
   if (!res.ok) {
@@ -58,5 +59,20 @@ export async function logout() {
     return response.json();
   } catch (error) {
     throw new Error("Logout failed");
+  }
+}
+
+export async function register(email: string, password: string) {
+  try {
+    const response = await fetch(API_URL + "users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    return response.json();
+  } catch (error) {
+    throw new Error("Register failed");
   }
 }

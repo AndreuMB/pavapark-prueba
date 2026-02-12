@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginUser = async (email: string, password: string) => {
     const data = await login(email, password);
 
-    // const data = await response.json();
     console.log(data.email);
     setUser(data.email);
 
@@ -43,7 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logoutUser = async () => {
     const response = await logout();
     console.log(response);
-
     setUser(null);
   };
 

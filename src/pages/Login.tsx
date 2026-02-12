@@ -1,34 +1,24 @@
 import { useState } from "react";
-import { login, type User } from "../api/auth";
+import { login, register, type User } from "../api/auth";
 import { useNavigate } from "react-router";
 import { useAuth } from "../components/AuthProvider";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState<User | null>(null);
+  const [message, setMessage] = useState<string>("");
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const auth = useAuth();
 
-  const handleSubmit = async (e: React.SubmitEvent) => {
+  const handleLogin = async (e: React.MouseEvent) => {
     e.preventDefault();
 
     setError("");
 
     try {
-      // const result = await login(email, password);
-      //   if (result?.password == password) {
-      //   } else {
-      //     setError("password wrong");
-      //   }
       await auth.loginUser(email, password);
-      // console.log({ result });
-
-      // const res = await fetch("/users/me", { credentials: "include" });
-      // setUser(await res.json());
-      // setUser(result);
       navigate("/sensors");
     } catch (err) {
       console.error(err);
@@ -37,11 +27,23 @@ export default function Login() {
     }
   };
 
+  const handleRegister = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+
+    try {
+      await register(email, password);
+      setMessage("user registered");
+    } catch (err) {
+      console.error(err);
+      setError("Register error");
+    }
+  };
+
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <h2>Login</h2>
-
+      <form>
         <input
           type="email"
           placeholder="Email"
@@ -57,18 +59,14 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-
-        <button type="submit">Log in</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {user && (
         <div>
-          <h3>User found</h3>
-          <p>Name: {user.email}</p>
-          <p>Password: {user.password}</p>
+          <button onClick={(e) => handleLogin(e)}>Log in</button>
+          <button onClick={(e) => handleRegister(e)}>Register</button>
         </div>
-      )}
+      </form>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {message && <p>{message}</p>}
     </div>
   );
 }
