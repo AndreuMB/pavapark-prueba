@@ -27,8 +27,10 @@ export async function addIngestion(sensorId: string) {
   return res.json();
 }
 
-export async function getIngestionsBySensor(sensorId: string) {
-  const res = await fetch(`${API_URL}sensors/${sensorId}/ingestions`);
+export async function getIngestionsBySensor(sensorId: string, limit: number) {
+  const res = await fetch(
+    `${API_URL}sensors/${sensorId}/ingestions?limit=${limit}`,
+  );
 
   if (!res.ok) {
     throw new Error("Invalid ingestion");

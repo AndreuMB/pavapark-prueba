@@ -22,7 +22,7 @@ export default function Ingestions() {
 
   const fetchIngestions = async () => {
     try {
-      const data = await getIngestionsBySensor(sensorId);
+      const data = await getIngestionsBySensor(sensorId, 10);
       console.log("ingestionsRecords = ", data);
 
       setIngestions(data);
