@@ -7,6 +7,8 @@ export type Sensor = {
   status: boolean;
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export async function createSensor(
   name: string,
   sensorCode: string,
@@ -14,7 +16,7 @@ export async function createSensor(
   url: string,
   status: boolean,
 ) {
-  const res = await fetch("http://localhost:3000/sensors/", {
+  const res = await fetch(API_URL + "sensors/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +32,7 @@ export async function createSensor(
 }
 
 export async function getSensors(): Promise<Sensor[] | null> {
-  const res = await fetch(`http://localhost:3000/sensors/`);
+  const res = await fetch(`${API_URL}sensors/`);
 
   if (!res.ok) {
     throw new Error("Failed to fetch user");
@@ -40,7 +42,7 @@ export async function getSensors(): Promise<Sensor[] | null> {
 }
 
 export async function getSensor(id: string): Promise<Sensor | null> {
-  const res = await fetch(`http://localhost:3000/sensors/${id}`);
+  const res = await fetch(`${API_URL}sensors/${id}`);
 
   if (!res.ok) {
     throw new Error("Failed to fetch user");
@@ -57,7 +59,7 @@ export async function updateSensor(
   url: string,
   status: boolean,
 ): Promise<Sensor | null> {
-  const res = await fetch(`http://localhost:3000/sensors/${id}`, {
+  const res = await fetch(`${API_URL}sensors/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -73,7 +75,7 @@ export async function updateSensor(
 }
 
 export async function deleteSensor(id: string): Promise<Sensor | null> {
-  const res = await fetch(`http://localhost:3000/sensors/${id}`, {
+  const res = await fetch(`${API_URL}sensors/${id}`, {
     method: "DELETE",
   });
 

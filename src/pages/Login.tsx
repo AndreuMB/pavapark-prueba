@@ -31,6 +31,8 @@ export default function Login() {
       // setUser(result);
       navigate("/sensors");
     } catch (err) {
+      console.error(err);
+
       setError("User not found");
     }
   };

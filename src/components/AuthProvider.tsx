@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { checkCookies, logout, type User } from "../api/auth";
+import { checkCookies, login, logout, type User } from "../api/auth";
 
 type AuthContextType = {
   user: User | null;
@@ -21,22 +21,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const loginUser = async (email: string, password: string) => {
-    console.log("enter login user");
+    const data = await login(email, password);
 
-    const response = await fetch("http://localhost:3000/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-      credentials: "include",
-    });
-
-    const data = await response.json();
+    // const data = await response.json();
     console.log(data.email);
     setUser(data.email);
-
-    if (!response.ok) {
-      throw new Error(data.message || "Login failed");
-    }
 
     return data;
   };

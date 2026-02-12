@@ -15,8 +15,10 @@ export type Ingestion = {
   valueC: number;
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export async function addIngestion(sensorId: string) {
-  const res = await fetch(`http://localhost:3000/sensors/${sensorId}/ingest/`);
+  const res = await fetch(`${API_URL}sensors/${sensorId}/ingest/`);
 
   if (!res.ok) {
     throw new Error("Invalid ingestion");
@@ -26,9 +28,7 @@ export async function addIngestion(sensorId: string) {
 }
 
 export async function getIngestionsBySensor(sensorId: string) {
-  const res = await fetch(
-    `http://localhost:3000/sensors/${sensorId}/ingestions`,
-  );
+  const res = await fetch(`${API_URL}sensors/${sensorId}/ingestions`);
 
   if (!res.ok) {
     throw new Error("Invalid ingestion");

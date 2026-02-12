@@ -16,8 +16,12 @@ export type User = {
 //   return res.json();
 // }
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export async function login(email: string, password: string) {
-  const res = await fetch("http://localhost:3000/users/login", {
+  console.log("API_URL = " + API_URL);
+
+  const res = await fetch(API_URL + "users/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -34,7 +38,7 @@ export async function login(email: string, password: string) {
 
 export async function checkCookies() {
   try {
-    const response = await fetch("http://localhost:3000/users/me", {
+    const response = await fetch(API_URL + "users/me", {
       credentials: "include",
     });
     if (!response.ok) {
@@ -48,7 +52,7 @@ export async function checkCookies() {
 
 export async function logout() {
   try {
-    const response = await fetch("http://localhost:3000/users/logout", {
+    const response = await fetch(API_URL + "users/logout", {
       credentials: "include",
     });
     return response.json();
